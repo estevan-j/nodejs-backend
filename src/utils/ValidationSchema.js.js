@@ -12,7 +12,17 @@ const userSchema = z.object({
     isVerified: z.boolean().default(false),
 });
 
+const registerUserSchema = z.object({
+    username: z.string().min(3).max(20),
+    email: z.string().email(),
+    recoveryEmail: z.string().email().optional(),
+    password: z.string().min(6).max(20),
+    verified: z.boolean().default(false),
+    verificacionCode: z.string().optional(),
+});
+
 
 module.exports = {
-    userSchema
+    userSchema,
+    registerUserSchema
 };
