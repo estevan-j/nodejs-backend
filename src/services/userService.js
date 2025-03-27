@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { userSchema } = require('../utils/ValidationSchema.js');
 const prisma = new PrismaClient();
 
 /**
@@ -71,20 +72,20 @@ const createUser = async(user) => {
   }
 }
 
-const updateUser = async(username, user) => {
+const updateUser = async(username, userData) => {
   try {
     const user = await prisma.user.update({
       where: {
         username: username
       },
       data: {
-        email: user.email,
-        username: user.username,
-        password: user.password,
-        recoveryEmail: user.recoveryEmail || null,
-        verified: user.verified,
-        verificationCode: user.verificationCode,
-        isAdmin: user.isAdmin
+        email: userData.email,
+        username: userData.username,
+        password: userData.password,
+        recoveryEmail: userData.recoveryEmail || null,
+        verified: userData.verified,
+        verificationCode: userData.verificationCode,
+        isAdmin: userData.isAdmin
       }
     })
     return user;
@@ -93,9 +94,9 @@ const updateUser = async(username, user) => {
   }
 }
 
-const updatePatchUser = async(username, user) => {
+const updatePatchUser = async(username, userData) => {
   try {
-    const validationResult = userSchema.partial().safeParse(user);
+    const validationResult = userSchema.partial().safeParse(userData);
     if (!validationResult.success) {
       throw new Error('Datos inválidos: ' + validationResult.error.format());
     }

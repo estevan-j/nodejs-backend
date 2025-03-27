@@ -3,26 +3,36 @@
 const { z } = require("zod");
 
 const userSchema = z.object({
-    username: z.string().min(3).max(20),
+    user    : z.string().min(5).max(15),
     email: z.string().email(),
+    recovery_email: z.string().email().optional(),
     password: z.string().min(6).max(20),
-    recoveryEmail: z.string().email().optional(),
-    verificacionCode: z.string().optional(),
+    verified: z.boolean().default(false), 
+    verificationCode: z.string().default("").optional(),
     isAdmin: z.boolean().default(false),
-    isVerified: z.boolean().default(false),
 });
 
 const registerUserSchema = z.object({
-    username: z.string().min(3).max(20),
+    user    : z.string().min(5).max(15),
     email: z.string().email(),
-    recoveryEmail: z.string().email().optional(),
     password: z.string().min(6).max(20),
-    verified: z.boolean().default(false),
-    verificacionCode: z.string().optional(),
+    recovery_email: z.string().email().optional(),
 });
 
 
+const verifyAccSchema = z.object({
+    email: z.string().email(),
+    verificationCode: z.string().length(6),
+});
+
+const loginSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(6).max(20),
+});
+
 module.exports = {
     userSchema,
-    registerUserSchema
+    registerUserSchema,
+    verifyAccSchema,
+    loginSchema
 };
