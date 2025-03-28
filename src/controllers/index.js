@@ -1,4 +1,4 @@
-const { verifyAcc, login } = require("./authController");
+const { verifyAcc, login, requestResetPassword, resetPassword } = require("./authController");
 const { getUser, getAllUsers, getUserByEmail, updatePatchUser, updateUser, deleteUser, createUser } = require("./userControlloers");
 
 
@@ -13,5 +13,7 @@ module.exports = {
     deleteUser,
     createUser,
     verifyAcc,
-    login
+    login,
+    requestResetPassword,
+    resetPassword
 }
