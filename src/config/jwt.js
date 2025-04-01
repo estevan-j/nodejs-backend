@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION;
+const JWT_EXPIRATION = process.env.JWT_EXPIRATION || '1h';
 
 const generateToken = (user) => {
     const payload = {
@@ -25,18 +25,28 @@ const authToken = (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ message: 'Token no autorizados' });
+            return res.status(401).json({ message: 'Token no proporcionado o formato incorrecto' });
         }
+        
         const token = authHeader.split(' ')[1];
-        const decoded = verifyToken(token);
-        req.user = decoded;
-        next();
+        if (!JWT_SECRET) {
+            return res.status(500).json({ message: 'Error de configuración del servidor' });
+        }
+        try {
+            const decoded = verifyToken(token);
+            req.user = decoded;
+            next();
+        } catch (tokenError) {
+            return res.status(401).json({ message: 'Token inválido: ' + tokenError.message });
+        }
     } catch (error) {
-        return res.status(401).json({ message: 'Token no autorizados' });
+        console.error('Error general:', error);
+        return res.status(500).json({ message: 'Error en autenticación: ' + error.message });
     }
 }
 
 module.exports =  {
     generateToken,
-    verifyToken
+    verifyToken, 
+    authToken
 }

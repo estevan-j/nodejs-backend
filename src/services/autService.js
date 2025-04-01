@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 
 const verifyByEmail = async (email) => {
     try {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.update({
             where: {
                 email: email
             },
-            data: {
+            data: {  // ¡Este es el problema!
                 verified: true,
-                verificacionCode: null
+                verificationCode: null
             }
         })
         return user;
@@ -24,13 +24,13 @@ const verifyByEmail = async (email) => {
 
 const resetPassword = async(email, password) => {
     try {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.update({
             where:{
                 email: email
             },
             data:{
                 password: password,
-                verificacionCode: null
+                verificationCode: null
             }
         })
         return user;
@@ -40,7 +40,7 @@ const resetPassword = async(email, password) => {
 }
 
 
-exports.module = {
+module.exports = {
     verifyByEmail,
     resetPassword
 }

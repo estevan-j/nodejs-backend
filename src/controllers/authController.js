@@ -82,7 +82,7 @@ const requestResetPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const userData = req.body;
-        const { email } = req.params;
+        const email = decodeURIComponent(req.params.email);
         const user = await userService.getUserByEmail(email);
         if (!user) {
             return res.status(404).json({ message: "User not found", response: "Usuario no existente" });

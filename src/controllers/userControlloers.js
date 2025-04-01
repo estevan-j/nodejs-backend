@@ -1,5 +1,6 @@
+const { response } = require('express');
 const { sendEmail } = require('../config/email.config.js');
-const userService = require('../services');
+const {userService} = require('../services');
 const { hashPassword, generateVerificationCode, hashVerificationCode } = require('../utils/helpers');
 const {registerUserSchema, userSchema} = require('../utils/ValidationSchema.js');
 
@@ -49,7 +50,7 @@ const createUser = async(req, res) => {
     userData.password = hashedPassword;
     const verificationCode = generateVerificationCode();
     const hashedVerificationCode = await hashVerificationCode(verificationCode);
-    userData.verificacionCode = hashedVerificationCode;
+    userData.verificationCode = hashedVerificationCode;
     userData.verified = false;
     const userCreated = await userService.createUser(userData);
     if (userCreated){
@@ -102,7 +103,7 @@ const updatePatchUser = async(req, res) => {
       });
     }
     await userService.updatePatchUser(user, validatedData.data);
-    return res.status(200).json({ message: 'User updated', message: `${user} was updated`, data: req.body.email });
+    return res.status(200).json({ message: 'User updated', response: `${user} was updated`, data: req.body.email });
   } catch (error) { 
     return res.status(500).json({ message: 'Error updating user', response: error.message });
   }
@@ -110,7 +111,7 @@ const updatePatchUser = async(req, res) => {
 
 const getUserByEmail = async(req, res) => {
   try {
-    const email = req.params.email;
+    const email = decodeURIComponent(req.params.email);
     // Validar formato del email
     try {
       userSchema.shape.email.parse(email);
@@ -121,8 +122,9 @@ const getUserByEmail = async(req, res) => {
       });
     }
     const user = await userService.getUserByEmail(email);
+    console.log('Usuario encontrado:', user ? 'Sí' : 'No');
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found', response: 'Usuario no encontrado' });
     }
     return res.status(200).json({ message: 'User found', response: user });
   } catch (error) {
