@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "b9b564da-2798-4964-8b5b-865f7b14500e",
+		"name": "Microservic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43639876"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": []
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "GetUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL1}}/users",
+							"host": [
+								"{{baseURL1}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserByUsername",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL1}}/users",
+							"host": [
+								"{{baseURL1}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
