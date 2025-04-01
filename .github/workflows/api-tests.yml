@@ -1,0 +1,46 @@
+name: API Tests
+
+on:
+  push:
+    branches:
+      - '*'         # Ejecutar en todas las ramas
+      - '!main'     # Excluir main (se maneja en el otro workflow)
+  pull_request:
+    branches:
+      - '*'         # Ejecutar en PRs a cualquier rama
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'  # Usar 20.x para evitar problemas de compatibilidad con Newman
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Start API Server for testing
+        run: |
+          npm run start &
+          sleep 10  # Esperar a que el servidor se inicie completamente
+        env:
+          PORT: 8080
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'Microbus' }}
+          
+      - name: Run API tests with Newman
+        run: npm run test:api:dev:report
+        
+      - name: Archive test results
+        if: always()  # Ejecutar aunque el paso anterior falle
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-reports
+          path: newman/*.html  # Ajusta la ruta donde se guardan los informes
