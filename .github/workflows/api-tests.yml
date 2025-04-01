@@ -2,13 +2,10 @@ name: API Tests
 
 on:
   push:
-    branches:
-      - '*'         # Ejecutar en todas las ramas
-      - '!main'     # Excluir main (se maneja en el otro workflow)
-  pull_request:
-    branches:
-      - '*'         # Ejecutar en PRs a cualquier rama
-
+    branches-ignore:
+      - main     # Usa branches-ignore en lugar de !main
+  pull_request: 
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
